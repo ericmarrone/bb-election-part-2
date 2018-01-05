@@ -35,7 +35,8 @@ document.addEventListener("DOMContentLoaded", function() {
         }).done(function(){
           console.log('Vote submitted!');
           var refreshButton = document.querySelector('button');
-          refreshButton.innerText = 'Update Vote count';
+          refreshButton.style.display = 'block';
+          refreshButton.innerText = 'Update Vote Count';
           refreshButton.addEventListener('click', function(e){
             $.ajax({
               url: 'https://bb-election-api.herokuapp.com/',
