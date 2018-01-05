@@ -7,12 +7,37 @@ document.addEventListener("DOMContentLoaded", function() {
   }).done(function(responseData){
     var candidates = document.querySelector('#list');
     responseData.candidates.forEach(function(candidate){
-      var li = document.createElement('li');
-      li.innerHTML =  `<p>Name: ${candidate.name}<br>Votes: ${candidate.votes}</p>`;
-      list.append(li);
-      var form = document.createElement('form');
-      form.innerHTML = '';
-      li.append(form);
+      var liTag = document.createElement('li');
+      liTag.innerHTML =  `<p>Name: ${candidate.name}<br>Votes: ${candidate.votes}</p>`;
+      list.append(liTag);
+      var formTag = document.createElement('form');
+      formTag.innerHTML = '';
+      liTag.append(formTag);
+      formTag.method = 'post';
+      formTag.action = 'https://bb-election-api.herokuapp.com/vote';
+      var hiddenField = document.createElement('input');
+      var submitButton = document.createElement('input');
+      hiddenField.setAttribute('type', "hidden");
+      hiddenField.setAttribute('name', "name");
+      hiddenField.setAttribute('value', candidate.name);
+      submitButton.type = "submit";
+      submitButton.value = "Vote";
+      formTag.append(hiddenField);
+      formTag.append(submitButton);
+
+      formTag.addEventListener('submit', function(e){
+        e.preventDefault();
+        $.ajax({
+          url: 'https://bb-election-api.herokuapp.com/vote',
+          method: 'POST',
+          data: {name: this.querySelector('input[type=hidden]').value},
+          dataType: 'JSON'
+        }).done(function(){
+          console.log('Vote submitted!');
+        }).fail(function(){
+          console.log('Vote submission failed!');
+        })
+      })
     })
   })
 
