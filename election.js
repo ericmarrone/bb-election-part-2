@@ -8,7 +8,7 @@ document.addEventListener("DOMContentLoaded", function() {
     var candidates = document.querySelector('#list');
     responseData.candidates.forEach(function(candidate){
       var liTag = document.createElement('li');
-      liTag.innerHTML =  `<p>Name: ${candidate.name}<br>Votes: ${candidate.votes}</p>`;
+      liTag.innerHTML =  `<p>Name: ${candidate.name}<br><span>Votes: ${candidate.votes}</span></p>`;
       list.append(liTag);
       var formTag = document.createElement('form');
       formTag.innerHTML = '';
@@ -34,8 +34,25 @@ document.addEventListener("DOMContentLoaded", function() {
           dataType: 'JSON'
         }).done(function(){
           console.log('Vote submitted!');
+          var refreshButton = document.querySelector('button');
+          refreshButton.innerText = 'Update Vote count';
+          refreshButton.addEventListener('click', function(e){
+            $.ajax({
+              url: 'https://bb-election-api.herokuapp.com/',
+              method: 'GET',
+              dataType: 'JSON'
+            }).done(function(data){
+              var updateVotes = document.getElementsByTagName('span')
+              for (var i=0; i<data.candidates.length; i++){
+                updateVotes[i].innerText = 'Votes: ' + data.candidates[i].votes;
+              };
+            });
+          });
+
+
         }).fail(function(){
           console.log('Vote submission failed!');
+
         })
       })
     })
